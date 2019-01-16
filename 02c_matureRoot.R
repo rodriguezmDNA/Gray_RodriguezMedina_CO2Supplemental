@@ -13,6 +13,9 @@ matureXylem_filterDiam <- matureXylem %>% filter(diameter >= 20)
 write.table(matureXylem_filterDiam,file = "02c_matureRoot_analysis/xylem_vessel_size_v2_FilteredByDiameter_atLeast20.txt",
             quote = F,sep = "\t",row.names = F)
 
+## Remove the outlier
+matureXylem_filterDiam <- matureXylem_filterDiam %>% filter(!image %in% "2A_20X")
+
 #### Set up graphical parameters
 ########################
 dodge <- position_dodge(width = 1)  #### Set up dodge to align violin and boxplot; ## A larger dodge width, the more separation.
@@ -75,11 +78,11 @@ matureXylem_filterDiam_lateral_avg_area <- matureXylem_filterDiam %>%
   distinct(sample.number,.keep_all = T)
 
 aovResult <- matureXylem_filterDiam_lateral_avg_area %>% aov(avg_area ~ CO2*Species, data = .) %>% summary()
-write.table(file = "02c_2_mature-xylem_lateralRoot_avg_area_CO2-Species_response.txt",
+write.table(file = "02c_2_mature-xylem_lateralRoot_avg_area_CO2-Species_response_filtoutlier.txt",
             signif(aovResult[[1]],3),
             sep = "\t",quote = F,col.names = NA)
 
-aovResult <- matureXylem_filterDiam %>% distinct(avg_area,.keep_all = T) %>% aov(avg_area ~ CO2*Species*tissue, data = .) %>% summary()
+#aovResult <- matureXylem_filterDiam %>% distinct(avg_area,.keep_all = T) %>% aov(avg_area ~ CO2*Species*tissue, data = .) %>% summary()
 # write.table(file = "02c_matureRoot_analysis/mature-xylem_3way_avg_area_CO2-Species_response.txt",
 #             signif(aovResult[[1]],3),
 #             sep = "\t",quote = F,col.names = NA)
@@ -89,7 +92,7 @@ aovResult <- matureXylem_filterDiam %>% distinct(avg_area,.keep_all = T) %>% aov
 #############################################
 aovResult <- matureXylem_filterDiam %>% distinct(sample.number,.keep_all = T) %>% 
   aov(MaxVessel ~ CO2*Species*tissue, data = .) %>% summary()
-write.table(file = "02c_3_mature-xylem_3way_MaxVesselNumber_CO2-Species_response.txt",
+write.table(file = "02c_3_mature-xylem_3way_MaxVesselNumber_CO2-Species_response_filtoutlier.txt",
             signif(aovResult[[1]],3),
             sep = "\t",quote = F,col.names = NA)
 
@@ -101,7 +104,7 @@ write.table(file = "02c_3_mature-xylem_3way_MaxVesselNumber_CO2-Species_response
 
 
 #pdf("figure02c_matureMetaxylem_CO2response_bySpecies-Tissue_ggplot2.pdf",paper = "a4r")
-pdf("figure02c_matureMetaxylem_CO2response_bySpecies-Tissue_ggplot2.pdf", width = 10,height = 12)
+pdf("figure02c_matureMetaxylem_CO2response_bySpecies-Tissue_ggplot2_filtoutlier.pdf", width = 10,height = 12)
 ####### Metaxylem diameter
 ### Add groups to the data
 matureXylem_filterDiam$Groups <- paste(matureXylem_filterDiam$Species,matureXylem_filterDiam$CO2,matureXylem_filterDiam$tissue,
